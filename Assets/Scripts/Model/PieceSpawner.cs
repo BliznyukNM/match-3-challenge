@@ -6,6 +6,9 @@ namespace Tactile.TactileMatch3Challenge.Model {
 			return UnityEngine.Random.Range(0, 5);
 		}
 		
+        public int CreatePowerPiece() {
+            return UnityEngine.Random.Range(5, 7);
+        }
 	}
 
 }
