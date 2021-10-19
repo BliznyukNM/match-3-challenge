@@ -25,8 +25,18 @@ namespace Tactile.TactileMatch3Challenge.Levels {
 
             var pieceSpawner = new PieceSpawner();
             var board = Board.Create(boardDefinition, pieceSpawner);
+            var rules = DefaultRules.GetRandomRules();
 
-            Config = new Config(board, DefaultRules.GetRandomRules());
+            board.OnPieceDeleted += (type) => {
+                if (rules.GatherPieces.ContainsKey(type)) {
+                    rules.GatherPieces[type].Count(1);
+                }
+            };
+            board.OnMoveMade += () => {
+                rules.MovesLeft.Count(1);
+            };
+
+            Config = new Config(board, rules);
         }
     }
 }

@@ -8,9 +8,9 @@ namespace Tactile.TactileMatch3Challenge.Levels {
 
         public IntCounter MovesLeft { get; }
 
-        public Dictionary<Piece, IntCounter> GatherPieces { get; }
+        public Dictionary<int, IntCounter> GatherPieces { get; }
 
-        public DefaultRules(int maxMoves, Dictionary<Piece, IntCounter> gatherPieces) {
+        public DefaultRules(int maxMoves, Dictionary<int, IntCounter> gatherPieces) {
             MovesLeft = maxMoves;
             GatherPieces = gatherPieces;
         }
@@ -18,8 +18,8 @@ namespace Tactile.TactileMatch3Challenge.Levels {
         public static DefaultRules GetRandomRules() {
             int movesCount = UnityEngine.Random.Range(10, 16);
             int pieceTypesCount = UnityEngine.Random.Range(1, 4);
-            var gatherPieces = new Dictionary<Piece, IntCounter>();
-            var piecesToGenerate = new List<Piece> { Piece.Red, Piece.Blue, Piece.Orange, Piece.Pink, Piece.Yellow };
+            var gatherPieces = new Dictionary<int, IntCounter>();
+            var piecesToGenerate = new List<int> { Piece.Red, Piece.Blue, Piece.Orange, Piece.Pink, Piece.Yellow };
 
             for (int i = 0; i < pieceTypesCount; i++) {
                 var piece = piecesToGenerate[UnityEngine.Random.Range(0, piecesToGenerate.Count)];

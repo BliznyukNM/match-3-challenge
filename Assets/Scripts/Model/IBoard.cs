@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 
 namespace Tactile.TactileMatch3Challenge.Model {
+
+    public delegate void PieceDeletedHandler(int type);
     
     public interface IBoard {
         
@@ -16,6 +18,8 @@ namespace Tactile.TactileMatch3Challenge.Model {
         List<Piece> GetConnected(int x, int y);
         bool TryGetPiecePos(Piece piece, out int px, out int py);
 
+        event PieceDeletedHandler OnPieceDeleted;
+        event System.Action OnMoveMade;
     }
     
 }

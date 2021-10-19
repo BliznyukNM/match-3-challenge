@@ -13,16 +13,16 @@ namespace Tactile.TactileMatch3Challenge.Model {
         }
 
         public bool IsPowerPiece => IsHorizontalPowerPiece || IsVerticalPowerPiece;
-        public bool IsHorizontalPowerPiece => Type == RocketHorizontal.Type;
-        public bool IsVerticalPowerPiece => Type == RocketVertical.Type;
+        public bool IsHorizontalPowerPiece => Type == RocketHorizontal;
+        public bool IsVerticalPowerPiece => Type == RocketVertical;
 
-        public static Piece Blue => new Piece(0);
-        public static Piece Orange => new Piece(1);
-        public static Piece Pink => new Piece(2);
-        public static Piece Red => new Piece(3);
-        public static Piece Yellow => new Piece(4);
-        public static Piece RocketHorizontal => new Piece(5);
-        public static Piece RocketVertical => new Piece(6);
+        public const int Blue = 0;
+        public const int Orange = 0;
+        public const int Pink = 2;
+        public const int Red = 3;
+        public const int Yellow = 4;
+        public const int RocketHorizontal = 5;
+        public const int RocketVertical = 6;
     }
 
 }

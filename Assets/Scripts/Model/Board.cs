@@ -7,6 +7,9 @@ namespace Tactile.TactileMatch3Challenge.Model {
         private Piece[,] boardState;
         private readonly IPieceSpawner pieceSpawner;
 
+        public event PieceDeletedHandler OnPieceDeleted;
+        public event System.Action OnMoveMade;
+
         public static Board Create(int[,] definition, IPieceSpawner pieceSpawner) {
             return new Board(definition, pieceSpawner);
         }
@@ -96,6 +99,7 @@ namespace Tactile.TactileMatch3Challenge.Model {
         }
 
         public void RemovePieceAt(int x, int y) {
+            OnPieceDeleted?.Invoke(boardState[x, y].Type);
             boardState[x, y] = null;
         }
 
@@ -201,9 +205,12 @@ namespace Tactile.TactileMatch3Challenge.Model {
             var piece = GetAt(x, y);
             if (connections.Count > 1) {
                 RemovePieces(connections);
-            }
-            if (!piece.IsPowerPiece && connections.Count >= 5) {
-                CreatePiece(pieceSpawner.CreatePowerPiece(), x, y);
+
+                if (!piece.IsPowerPiece && connections.Count >= 5) {
+                    CreatePiece(pieceSpawner.CreatePowerPiece(), x, y);
+                }
+
+                OnMoveMade?.Invoke();
             }
         }
 

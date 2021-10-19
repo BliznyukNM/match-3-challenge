@@ -17,7 +17,7 @@ namespace Tactile.TactileMatch3Challenge.UI {
         public void Configure(Levels.Config config) {
             foreach (var gatherPiece in config.Rules.GatherPieces) {
                 var goal = Instantiate(goalPrefab, goalsRoot);
-                goal.Link(gatherPiece.Value, spritesDatabase.GetSpriteForPieceType(gatherPiece.Key.Type));
+                goal.Link(gatherPiece.Value, spritesDatabase.GetSpriteForPieceType(gatherPiece.Key));
             }
             moveCounter = config.Rules.MovesLeft;
         }
