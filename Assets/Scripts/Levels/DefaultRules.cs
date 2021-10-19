@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Tactile.TactileMatch3Challenge.Model;
 using Tactile.TactileMatch3Challenge.Utils;
+using System.Linq;
 
 namespace Tactile.TactileMatch3Challenge.Levels {
 
@@ -13,7 +14,19 @@ namespace Tactile.TactileMatch3Challenge.Levels {
         public DefaultRules(int maxMoves, Dictionary<int, IntCounter> gatherPieces) {
             MovesLeft = maxMoves;
             GatherPieces = gatherPieces;
+
+            MovesLeft.OnFinished += () => OnLose?.Invoke();
+            foreach (var gatherPiece in gatherPieces) {
+                gatherPiece.Value.OnFinished += () => {
+                    if (gatherPieces.All(g => g.Value.IsFinished)) {
+                        OnWin?.Invoke();
+                    }
+                };
+            }
         }
+
+        public event System.Action OnWin;
+        public event System.Action OnLose;
 
         public static DefaultRules GetRandomRules() {
             int movesCount = UnityEngine.Random.Range(10, 16);

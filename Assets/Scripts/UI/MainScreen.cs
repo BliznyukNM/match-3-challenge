@@ -20,6 +20,9 @@ namespace Tactile.TactileMatch3Challenge.UI {
                 goal.Link(gatherPiece.Value, spritesDatabase.GetSpriteForPieceType(gatherPiece.Key));
             }
             moveCounter = config.Rules.MovesLeft;
+
+            config.Rules.OnWin += () => Debug.Log("Win!");
+            config.Rules.OnLose += () => Debug.Log("Lose!");
         }
 
         private void Update() {
