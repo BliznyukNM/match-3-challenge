@@ -52,7 +52,7 @@ namespace Tactile.TactileMatch3Challenge.Tests.UnitTests {
             var board = Board.Create(state, new PieceSpawner());
             
             // Act & Assert
-            return board.GetAt(x, y).type;
+            return board.GetAt(x, y).Type;
         }
 
         [Test]
@@ -153,8 +153,8 @@ namespace Tactile.TactileMatch3Challenge.Tests.UnitTests {
             var board = Board.Create(state, new PieceSpawner());
             
             //Assert
-            Assert.That(board.GetAt(0, 0).type,Is.EqualTo(0));
-            Assert.That(board.GetAt(4, 1).type,Is.EqualTo(5));
+            Assert.That(board.GetAt(0, 0).Type,Is.EqualTo(0));
+            Assert.That(board.GetAt(4, 1).Type,Is.EqualTo(5));
         }
         
         [Test]
@@ -187,11 +187,11 @@ namespace Tactile.TactileMatch3Challenge.Tests.UnitTests {
 		}
 
         private int[] GetTypesFromPieces(Piece[] pieces) {
-            return pieces.Select(p => p.type).ToArray();
+            return pieces.Select(p => p.Type).ToArray();
         }
         
         private int[] GetTypesFromPieces(List<Piece> pieces) {
-            return pieces.Select(p => p.type).ToArray();
+            return pieces.Select(p => p.Type).ToArray();
         }
         
     }

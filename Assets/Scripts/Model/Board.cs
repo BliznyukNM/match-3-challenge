@@ -43,7 +43,7 @@ namespace Tactile.TactileMatch3Challenge.Model {
         }
 
         public Piece CreatePiece(int pieceType, int x, int y) {
-            var piece = new Piece() { type = pieceType };
+            var piece = new Piece(pieceType);
             boardState[x, y] = piece;
             return piece;
         }
@@ -55,7 +55,7 @@ namespace Tactile.TactileMatch3Challenge.Model {
             for (int x = 0; x < Width; x++) {
                 for (int y = 0; y < Height; y++) {
                     var p = boardState[x, y];
-                    result[x, y] = p != null ? p.type : -1;
+                    result[x, y] = p != null ? p.Type : -1;
                 }
             }
 
@@ -146,7 +146,7 @@ namespace Tactile.TactileMatch3Challenge.Model {
             for (int i = 0; i < neighbors.Length; i++) {
 
                 var neighbor = neighbors[i];
-                if (!searched.Contains(neighbor) && neighbor.type == piece.type) {
+                if (!searched.Contains(neighbor) && neighbor.Type == piece.Type) {
                     SearchForConnected(neighbor, searched);
                 }
             }

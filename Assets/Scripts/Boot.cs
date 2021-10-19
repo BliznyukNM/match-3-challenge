@@ -1,30 +1,24 @@
-﻿using Tactile.TactileMatch3Challenge.Model;
+﻿using Tactile.TactileMatch3Challenge.Levels;
+using Tactile.TactileMatch3Challenge.Model;
 using Tactile.TactileMatch3Challenge.ViewComponents;
 using UnityEngine;
 
 namespace Tactile.TactileMatch3Challenge {
-	
-	public class Boot : MonoBehaviour {
-		
-		[SerializeField] private BoardRenderer boardRenderer;
-		
-		void Start () {
-			
-			int[,] boardDefinition = {
-				{3, 3, 1, 2, 4, 4},
-				{2, 2, 1, 2, 3, 4},
-				{1, 1, 0, 0, 2, 2},
-				{2, 2, 0, 0, 1, 1},
-				{1, 4, 2, 2, 1, 1},
-				{1, 4, 2, 2, 1, 1},
-			};
 
-			var pieceSpawner = new PieceSpawner();
-			var board = Board.Create(boardDefinition, pieceSpawner);
-			
-			boardRenderer.Initialize(board);
-		}
+    public class Boot : MonoBehaviour {
 
-	}
-	
+        [SerializeField] private BoardRenderer boardRenderer;
+
+        private Level level;
+
+        void Start() {
+
+            level = new Level();
+            level.ConfigureWithDefaultRandomRules();
+            var board = level.Config.Board as Board;
+            boardRenderer.Initialize(board);
+        }
+
+    }
+
 }

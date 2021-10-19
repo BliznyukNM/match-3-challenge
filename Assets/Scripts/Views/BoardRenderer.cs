@@ -91,7 +91,7 @@ namespace Tactile.TactileMatch3Challenge.ViewComponents {
         private VisualPiece CreateVisualPiece(Piece piece) {
 
             var pieceObject = Instantiate(visualPiecePrefab, transform, true);
-            var sprite = pieceTypeDatabase.GetSpriteForPieceType(piece.type);
+            var sprite = pieceTypeDatabase.GetSpriteForPieceType(piece.Type);
             pieceObject.SetSprite(sprite);
             return pieceObject;
 
