@@ -116,7 +116,17 @@ namespace Tactile.TactileMatch3Challenge.Model {
         }
 
         public List<Piece> GetConnected(int x, int y) {
-            var start = GetAt(x, y);
+            Piece start = GetAt(x, y);
+
+            if (start.IsPowerPiece) {
+                if (start.IsHorizontalPowerPiece) {
+                    return GetRow(y);
+                }
+                if (start.IsVerticalPowerPiece) {
+                    return GetColumn(x);
+                }
+            }
+
             return SearchForConnected(start, new List<Piece>());
         }
 
@@ -156,6 +166,28 @@ namespace Tactile.TactileMatch3Challenge.Model {
             return neighbors.ToArray();
         }
 
+        private List<Piece> GetRow(int row) {
+
+            var neighbors = new List<Piece>(Width);
+
+            for (int i = 0; i < Width; i++) {
+                neighbors.Add(GetAt(i, row));
+            }
+
+            return neighbors;
+        }
+
+        private List<Piece> GetColumn(int column) {
+
+            var neighbors = new List<Piece>(Height);
+
+            for (int i = 0; i < Height; i++) {
+                neighbors.Add(GetAt(column, i));
+            }
+
+            return neighbors;
+        }
+
         private List<Piece> AddNeighbor(int x, int y, List<Piece> neighbors) {
             if (!IsWithinBounds(x, y)) return neighbors;
 
@@ -166,10 +198,11 @@ namespace Tactile.TactileMatch3Challenge.Model {
         public void FindAndRemoveConnectedAt(int x, int y) {
 
             var connections = GetConnected(x, y);
+            var piece = GetAt(x, y);
             if (connections.Count > 1) {
                 RemovePieces(connections);
             }
-            if (connections.Count >= 5) {
+            if (!piece.IsPowerPiece && connections.Count >= 5) {
                 CreatePiece(pieceSpawner.CreatePowerPiece(), x, y);
             }
         }
