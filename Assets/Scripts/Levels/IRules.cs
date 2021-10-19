@@ -4,6 +4,6 @@ using Tactile.TactileMatch3Challenge.Utils;
 
 public interface IRules
 {
-    IntCounter? MovesLeft { get; }
+    IntCounter MovesLeft { get; }
     Dictionary<Piece, IntCounter> GatherPieces { get; }
 }

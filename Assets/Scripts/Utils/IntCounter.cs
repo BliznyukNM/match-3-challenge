@@ -2,7 +2,7 @@
 
 namespace Tactile.TactileMatch3Challenge.Utils {
 
-    public struct IntCounter {
+    public class IntCounter {
 
         public int Current { get; private set; }
         public int Max { get; }

@@ -6,13 +6,13 @@ namespace Tactile.TactileMatch3Challenge.Levels {
 
     public class DefaultRules : IRules {
 
-        public IntCounter? MovesLeft { get; }
+        public IntCounter MovesLeft { get; }
 
         public Dictionary<Piece, IntCounter> GatherPieces { get; }
 
         public DefaultRules(int maxMoves, Dictionary<Piece, IntCounter> gatherPieces) {
             MovesLeft = maxMoves;
-            GatherPieces = GatherPieces;
+            GatherPieces = gatherPieces;
         }
 
         public static DefaultRules GetRandomRules() {

@@ -2,7 +2,7 @@
 
 namespace Tactile.TactileMatch3Challenge.Levels {
 
-    public struct Config {
+    public class Config {
 
         public IBoard Board { get; }
         public IRules Rules { get; }
