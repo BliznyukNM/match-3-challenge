@@ -1,82 +1,122 @@
-﻿using Tactile.TactileMatch3Challenge.Model;
+﻿using System.Collections;
+using System.Collections.Generic;
+using Tactile.TactileMatch3Challenge.Model;
 using UnityEngine;
 
 namespace Tactile.TactileMatch3Challenge.ViewComponents {
 
-	public class BoardRenderer : MonoBehaviour {
-		
-		[SerializeField] private PieceTypeDatabase pieceTypeDatabase;
-		[SerializeField] private VisualPiece visualPiecePrefab;
-		
-		private Board board;
-		
-		public void Initialize(Board board) {
-			this.board = board;
+    public class BoardRenderer : MonoBehaviour {
 
-			CenterCamera();
-			CreateVisualPiecesFromBoardState();
-		}
+        [SerializeField] private PieceTypeDatabase pieceTypeDatabase;
+        [SerializeField] private VisualPiece visualPiecePrefab;
 
-		private void CenterCamera() {
-			Camera.main.transform.position = new Vector3((board.Width-1)*0.5f,-(board.Height-1)*0.5f);
-		}
+        private Board board;
+        private bool discardInput;
 
-		private void CreateVisualPiecesFromBoardState() {
-			DestroyVisualPieces();
+        public void Initialize(Board board) {
+            this.board = board;
 
-			foreach (var pieceInfo in board.IteratePieces()) {
-				
-				var visualPiece = CreateVisualPiece(pieceInfo.piece);
-				visualPiece.transform.localPosition = LogicPosToVisualPos(pieceInfo.pos.x, pieceInfo.pos.y);
+            CenterCamera();
+            CreateVisualPiecesFromBoardState();
+        }
 
-			}
-		}
-		
-		public Vector3 LogicPosToVisualPos(float x,float y) { 
-			return new Vector3(x, -y, -y);
-		}
+        private void CenterCamera() {
+            Camera.main.transform.position = new Vector3((board.Width - 1) * 0.5f, -(board.Height - 1) * 0.5f);
+        }
 
-		private BoardPos ScreenPosToLogicPos(float x, float y) { 
-			
-			var worldPos = Camera.main.ScreenToWorldPoint(new Vector3(x,y,-Camera.main.transform.position.z));
-			var boardSpace = transform.InverseTransformPoint(worldPos);
+        private void CreateVisualPiecesFromBoardState() {
+            DestroyVisualPieces();
 
-			return new BoardPos() {
-				x = Mathf.RoundToInt(boardSpace.x),
-				y = -Mathf.RoundToInt(boardSpace.y)
-			};
+            foreach (var pieceInfo in board.IteratePieces()) {
 
-		}
+                var visualPiece = CreateVisualPiece(pieceInfo.piece);
+                visualPiece.transform.localPosition = LogicPosToVisualPos(pieceInfo.pos.x, pieceInfo.pos.y);
+            }
+        }
 
-		private VisualPiece CreateVisualPiece(Piece piece) {
-			
-			var pieceObject = Instantiate(visualPiecePrefab, transform, true);
-			var sprite = pieceTypeDatabase.GetSpriteForPieceType(piece.type);
-			pieceObject.SetSprite(sprite);
-			return pieceObject;
-			
-		}
+        private IEnumerator CreateVisualPiecesFromResolveResult(ResolveResult resolveResult) {
 
-		private void DestroyVisualPieces() {
-			foreach (var visualPiece in GetComponentsInChildren<VisualPiece>()) {
-				Object.Destroy(visualPiece.gameObject);
-			}
-		}
+            discardInput = true;
+            DestroyVisualPieces();
 
-		private void Update() {
-			
-			if (Input.GetMouseButtonDown(0)) {
+            var visualPieces = new Dictionary<BoardPos, VisualPiece>();
+            foreach (var pieceInfo in board.IteratePieces()) {
+                var visualPiece = CreateVisualPiece(pieceInfo.piece);
+                visualPiece.transform.localPosition = LogicPosToVisualPos(pieceInfo.pos.x, pieceInfo.pos.y);
+                visualPieces.Add(pieceInfo.pos, visualPiece);
+            }
 
-				var pos = ScreenPosToLogicPos(Input.mousePosition.x, Input.mousePosition.y);
+            var fallings = new List<Coroutine>();
+            foreach (var change in resolveResult.changes) {
 
-				if (board.IsWithinBounds(pos.x, pos.y)) {
-					board.Resolve(pos.x, pos.y);
-					CreateVisualPiecesFromBoardState();
-				}
+                Piece piece = change.Key;
+                ChangeInfo changeInfo = change.Value;
+                VisualPiece visualPiece = visualPieces[changeInfo.ToPos];
+                Vector3 visualToPos = LogicPosToVisualPos(changeInfo.ToPos.x, changeInfo.ToPos.y);
+                Vector3 visualFromPos = LogicPosToVisualPos(changeInfo.FromPos.x, changeInfo.FromPos.y);
+                var fallingTime = Random.Range(0.5f, 0.6f);
 
-			}
-		}
-		
-	}
+                if (changeInfo.WasCreated) {
+                    visualFromPos += Vector3.up * 3f;
+                }
+
+                var fallingAnimation = StartCoroutine(Utils.Tween.Move(
+                            visualPiece.transform, visualFromPos, visualToPos, fallingTime, Utils.EaseFunctions.EaseOutBounce));
+                fallings.Add(fallingAnimation);
+            }
+
+            foreach (var falling in fallings) {
+                yield return falling;
+            }
+
+            discardInput = false;
+        }
+
+        public Vector3 LogicPosToVisualPos(float x, float y) {
+            return new Vector3(x, -y, -y);
+        }
+
+        private BoardPos ScreenPosToLogicPos(float x, float y) {
+
+            var worldPos = Camera.main.ScreenToWorldPoint(new Vector3(x, y, -Camera.main.transform.position.z));
+            var boardSpace = transform.InverseTransformPoint(worldPos);
+
+            return new BoardPos() {
+                x = Mathf.RoundToInt(boardSpace.x),
+                y = -Mathf.RoundToInt(boardSpace.y)
+            };
+
+        }
+
+        private VisualPiece CreateVisualPiece(Piece piece) {
+
+            var pieceObject = Instantiate(visualPiecePrefab, transform, true);
+            var sprite = pieceTypeDatabase.GetSpriteForPieceType(piece.type);
+            pieceObject.SetSprite(sprite);
+            return pieceObject;
+
+        }
+
+        private void DestroyVisualPieces() {
+            foreach (var visualPiece in GetComponentsInChildren<VisualPiece>()) {
+                Object.Destroy(visualPiece.gameObject);
+            }
+        }
+
+        private void Update() {
+
+            if (!discardInput && Input.GetMouseButtonDown(0)) {
+
+                var pos = ScreenPosToLogicPos(Input.mousePosition.x, Input.mousePosition.y);
+
+                if (board.IsWithinBounds(pos.x, pos.y)) {
+                    var resolveResult = board.Resolve(pos.x, pos.y);
+                    StartCoroutine(CreateVisualPiecesFromResolveResult(resolveResult));
+                }
+
+            }
+        }
+
+    }
 
 }
