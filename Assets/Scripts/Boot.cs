@@ -16,12 +16,18 @@ namespace Tactile.TactileMatch3Challenge {
         void Start() {
 
             level = new Level();
-            level.ConfigureWithDefaultRandomRules();
-            var board = level.Config.Board as Board;
-            boardRenderer.Initialize(board);
-            mainScreen.Configure(level.Config);
+            ChooseDefaultRandomLevel();
         }
 
+        public void ChooseDefaultRandomLevel() {
+            level.ConfigureWithDefaultRandomRules();
+            level.Config.Rules.OnWin += () => boardRenderer.Pause(true);
+            level.Config.Rules.OnLose += () => boardRenderer.Pause(true);
+            var board = level.Config.Board as Board;
+            boardRenderer.Initialize(board);
+            boardRenderer.Pause(false);
+            mainScreen.Configure(level.Config);
+        }
     }
 
 }

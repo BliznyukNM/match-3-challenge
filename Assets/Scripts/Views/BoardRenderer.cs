@@ -12,12 +12,17 @@ namespace Tactile.TactileMatch3Challenge.ViewComponents {
 
         private Board board;
         private bool discardInput;
+        private bool pause;
 
         public void Initialize(Board board) {
             this.board = board;
 
             CenterCamera();
             CreateVisualPiecesFromBoardState();
+        }
+
+        public void Pause(bool enabled) {
+            pause = enabled;
         }
 
         private void CenterCamera() {
@@ -105,7 +110,7 @@ namespace Tactile.TactileMatch3Challenge.ViewComponents {
 
         private void Update() {
 
-            if (!discardInput && Input.GetMouseButtonDown(0)) {
+            if (!pause && !discardInput && Input.GetMouseButtonDown(0)) {
 
                 var pos = ScreenPosToLogicPos(Input.mousePosition.x, Input.mousePosition.y);
 

@@ -12,17 +12,30 @@ namespace Tactile.TactileMatch3Challenge.UI {
         [SerializeField] private Transform goalsRoot;
         [SerializeField] private PieceTypeDatabase spritesDatabase;
 
+        [SerializeField] private GameObject winPopup;
+        [SerializeField] private GameObject losePopup;
+
         private IntCounter moveCounter;
 
         public void Configure(Levels.Config config) {
+            ClearUI();
+
             foreach (var gatherPiece in config.Rules.GatherPieces) {
                 var goal = Instantiate(goalPrefab, goalsRoot);
                 goal.Link(gatherPiece.Value, spritesDatabase.GetSpriteForPieceType(gatherPiece.Key));
             }
             moveCounter = config.Rules.MovesLeft;
 
-            config.Rules.OnWin += () => Debug.Log("Win!");
-            config.Rules.OnLose += () => Debug.Log("Lose!");
+            config.Rules.OnWin += () => winPopup.SetActive(true);
+            config.Rules.OnLose += () => losePopup.SetActive(true);
+        }
+
+        private void ClearUI() {
+            winPopup.SetActive(false);
+            losePopup.SetActive(false);
+            foreach (Transform child in goalsRoot) {
+                Destroy(child.gameObject);
+            }
         }
 
         private void Update() {
